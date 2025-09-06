@@ -3,30 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFC音乐播放</title>
+    <title>NFC音乐播放系统</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            height: 100vh;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-        }
-        h1 {
-            font-size: 2em;
+            padding: 20px;
             color: #333;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 140px;
+        }
+        
+        #playButton {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+        
+        #playButton:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        #pauseButton {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+            display: none;
+        }
+        
+        #pauseButton:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+        }
+        
+        .welcome-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .welcome-text {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            font-weight: 300;
+            line-height: 1.4;
+        }
+        
+        .highlight {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+        
+        .image-container {
+            margin-top: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+        
+        .image-container:hover {
+            transform: scale(1.02);
+        }
+        
+        .instruction-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .music-status {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .welcome-text {
+                font-size: 1.5rem;
+            }
+            
+            button {
+                padding: 12px 25px;
+                font-size: 1rem;
+                min-width: 120px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .container {
+            animation: fadeIn 0.8s ease-out;
         }
     </style>
 </head>
 <body>
-    <h1>欢迎使用NFC播放音乐</h1>
-    
-    <audio autoplay loop>
-        <source src="kongchengji.mp3" type="audio/mpeg">
-        您的浏览器不支持音频播放。
-    </audio>
+    <div class="container">
+        <div class="header">
+            <div class="logo">NFC智能说明书解决方案</div>
+            
+        </div>
+        
+        <div class="buttons">
+            <button id="playButton">▶️ 播放语音</button>
+            <button id="pauseButton">⏸️ 暂停语音</button>
+        </div>
+        
+        <div class="welcome-section">
+            <div class="welcome-text">欢迎使用<span class="highlight">NFC说明书</span>系统</div>
+        </div>
+        
+        <div class="image-container">
+            <img src="shuomingshu.jpg" alt="NFC使用说明" class="instruction-image">
+        </div>
+        
+        <div class="music-status" id="musicStatus">音乐状态：等待播放...</div>
+        
+        <audio id="bgMusic" loop>
+            <source src="kongchengji.mp3" type="audio/mpeg">
+            您的浏览器不支持音频元素
+        </audio>
+    </div>
+
+    <script>
+        const playButton = document.getElementById('playButton');
+        const pauseButton = document.getElementById('pauseButton');
+        const bgMusic = document.getElementById('bgMusic');
+        const musicStatus = document.getElementById('musicStatus');
+
+        // 点击播放
+        playButton.addEventListener('click', () => {
+            bgMusic.play()
+                .then(() => {
+                    playButton.style.display = 'none';
+                    pauseButton.style.display = 'inline-block';
+                    musicStatus.textContent = '音乐状态：正在播放 🎶';
+                    musicStatus.style.color = '#4CAF50';
+                })
+                .catch(e => {
+                    console.error('播放失败:', e);
+                    musicStatus.textContent = '播放失败，请检查音乐文件';
+                    musicStatus.style.color = '#f44336';
+                });
+        });
+
+        // 点击暂停
+        pauseButton.addEventListener('click', () => {
+            bgMusic.pause();
+            pauseButton.style.display = 'none';
+            playButton.style.display = 'inline-block';
+            musicStatus.textContent = '音乐状态：已暂停 ⏸️';
+            musicStatus.style.color = '#ff9800';
+        });
+
+        // 尝试自动播放
+        bgMusic.play().catch(e => {
+            console.log('自动播放被阻止，请用户点击播放');
+            musicStatus.textContent = '点击上方按钮开始播放音乐';
+        });
+    </script>
 </body>
 </html>
