@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC音乐播放</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div>欢迎使用NFC播放音乐</div>
+    
+    <audio autoplay loop>
+        <source src="file:///kongchengji.mp3" type="audio/mpeg">
+        您的浏览器不支持音频元素。
+    </audio>
+
+    <script>
+        // 尝试自动播放音乐（可能需要用户交互后才能播放）
+        document.addEventListener('DOMContentLoaded', function() {
+            var audio = document.querySelector('audio');
+            audio.play().catch(e => {
+                console.log('自动播放被阻止:', e);
+                // 可以在这里添加一个按钮让用户手动触发播放
+            });
+        });
+    </script>
+</body>
+</html>
