@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NFC音乐播放器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -56,6 +57,18 @@
             -webkit-text-fill-color: transparent;
         }
         
+        .nfc-icon {
+            font-size: 5rem;
+            margin-bottom: 25px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
         .music-player {
             margin-top: 30px;
         }
@@ -93,6 +106,7 @@
         .volume-control {
             display: flex;
             align-items: center;
+            justify-content: center;
             margin-top: 20px;
             gap: 10px;
         }
@@ -115,50 +129,99 @@
             cursor: pointer;
         }
         
-        .nfc-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
         .status {
             margin-top: 20px;
             font-size: 1.2rem;
             color: #feb47b;
         }
         
+        .song-info {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+        
+        .waves {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0 0v46.29c47.79 22.2 103.59 32.17 158 28 70.36-5.37 136.33-33.31 206.8-37.5 73.84-4.36 147.54 16.88 218.2 35.26 69.27 18 138.3 24.88 209.4 13.08 36.15-6 69.85-17.84 104.45-29.34C989.49 25 1113-14.29 1200 52.47V0z" fill="rgba(255,255,255,0.07)"/></svg>');
+            background-size: 1200px 100px;
+            animation: wave 18s linear infinite;
+        }
+        
+        .wave:nth-child(2) {
+            animation: wave 16s linear infinite;
+            opacity: 0.5;
+            background-position-y: 10px;
+        }
+        
+        .wave:nth-child(3) {
+            animation: wave 20s linear infinite;
+            opacity: 0.3;
+            background-position-y: 15px;
+        }
+        
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-25%); }
+            100% { transform: translateX(-50%); }
+        }
+        
         @media (max-width: 768px) {
             h1 { font-size: 2rem; }
             .container { padding: 30px; }
             button { width: 50px; height: 50px; }
+            .nfc-icon { font-size: 4rem; }
         }
     </style>
 </head>
 <body>
+    <div class="waves">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+    
     <div class="container">
-        <div class="nfc-icon">📱</div>
+        <div class="nfc-icon">
+            <i class="fas fa-compact-disc"></i>
+        </div>
         <h1>欢迎使用NFC播放音乐</h1>
         
         <div class="music-player">
+            <div class="song-info">正在播放：空城计</div>
+            
             <div class="controls">
-                <button id="playBtn">▶</button>
-                <button id="pauseBtn">❚❚</button>
-                <button id="stopBtn">■</button>
+                <button id="playBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button id="pauseBtn">
+                    <i class="fas fa-pause"></i>
+                </button>
+                <button id="stopBtn">
+                    <i class="fas fa-stop"></i>
+                </button>
             </div>
             
             <div class="volume-control">
-                <span>🔈</span>
+                <i class="fas fa-volume-down"></i>
                 <input type="range" id="volume" min="0" max="1" step="0.1" value="0.7">
-                <span>🔊</span>
+                <i class="fas fa-volume-up"></i>
             </div>
             
-            <div class="status" id="status">正在播放: 空城计</div>
+            <div class="status" id="status">音乐播放中...</div>
         </div>
     </div>
 
@@ -183,28 +246,34 @@
                 
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
+                        // 自动播放失败，显示提示
                         status.textContent = "点击播放按钮开始播放音乐";
+                        status.style.color = "#ff7e5f";
                     });
                 }
             });
             
             // 播放按钮
+
             playBtn.addEventListener('click', function() {
                 audio.play();
-                status.textContent = "正在播放: 空城计";
+                status.textContent = "音乐播放中...";
+                status.style.color = "#feb47b";
             });
             
             // 暂停按钮
             pauseBtn.addEventListener('click', function() {
                 audio.pause();
-                status.textContent = "已暂停";
+                status.textContent = "音乐已暂停";
+                status.style.color = "#ff7e5f";
             });
             
             // 停止按钮
             stopBtn.addEventListener('click', function() {
                 audio.pause();
                 audio.currentTime = 0;
-                status.textContent = "播放已停止";
+                status.textContent = "音乐已停止";
+                status.style.color = "#ff7e5f";
             });
             
             // 音量控制
