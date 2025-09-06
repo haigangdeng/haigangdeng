@@ -15,24 +15,37 @@
             font-size: 24px;
             background-color: #f0f0f0;
         }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <div>欢迎使用NFC播放音乐</div>
+    <div>
+        <p>欢迎使用NFC播放音乐</p>
+        <button id="playButton">点击播放音乐</button>
+    </div>
     
-    <audio autoplay loop>
+    <audio id="bgMusic" loop>
         <source src="kongchengji.mp3" type="audio/mpeg">
         您的浏览器不支持音频元素。
     </audio>
 
     <script>
-        // 尝试自动播放音乐（可能需要用户交互后才能播放）
-        document.addEventListener('DOMContentLoaded', function() {
-            var audio = document.querySelector('audio');
-            audio.play().catch(e => {
-                console.log('自动播放被阻止:', e);
-                // 可以在这里添加一个按钮让用户手动触发播放
-            });
+        const playButton = document.getElementById('playButton');
+        const bgMusic = document.getElementById('bgMusic');
+
+        playButton.addEventListener('click', () => {
+            bgMusic.play()
+                .then(() => playButton.style.display = 'none')
+                .catch(e => console.error('播放失败:', e));
+        });
+
+        // 尝试自动播放（可能被浏览器阻止）
+        bgMusic.play().catch(e => {
+            console.log('自动播放被阻止，请用户点击播放');
         });
     </script>
 </body>
